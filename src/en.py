@@ -8,7 +8,7 @@ import re
 
 # Speaker notes, one per slide, in slide order.
 NOTES = [
-    "In the name of God, the Most Gracious, the Most Merciful.",
+    "بسم الله الرحمن الرحيم (In the name of God, the Most Gracious, the Most Merciful.)",
     "Right now, 99.99 percent of developers and programmers are shipping a \"feature\". What do I mean by shipping a feature?",
     "I mean that big companies like Gemini, Google, Grok, X, ChatGPT and OpenAI can eat your product for breakfast tomorrow! They can push your product out of the race very quickly. It might even happen immediately! Do you see?",
     "But when you offer a vital, foundational platform, even the big companies come to need it.",
@@ -37,7 +37,7 @@ TEXT = [
     ('title="یادداشت سخنران (N)">یادداشت</button>', 'title="Speaker notes (N)">Notes</button>'),
     ('title="تمام‌صفحه (F)">تمام‌صفحه</button>', 'title="Fullscreen (F)">Fullscreen</button>'),
     # cover
-    ('<div class="bism f" data-f="0">بسم‌الله الرحمن الرحیم</div>', '<div class="bism f" data-f="0">In the name of God</div>'),
+    ('<div class="bism f" data-f="0">بسم‌الله الرحمن الرحیم</div>', '<div class="bism f" data-f="0" lang="ar" dir="rtl">بسم الله الرحمن الرحيم</div>'),
     ('گراف دانش سازمان · با صدای لونا', 'The organization’s knowledge graph · voiced by Luna'),
     ('از <span style="color:var(--warn)">«قابلیت»</span> تا <span class="grad">«پلتفرم»</span>', 'From a <span style="color:var(--warn)">feature</span> to a <span class="grad">platform</span>'),
     ('چرا محصولی که غول‌ها نمی‌توانند بخورند، همان محصولی است که می‌خرند.', 'Why the product the giants can’t eat is the product they buy.'),
@@ -150,7 +150,7 @@ def to_english(src: str) -> str:
     if n != len(NOTES):
         raise SystemExit(f'en.py: {n} slides but {len(NOTES)} notes')
     left = re.findall(r'[؀-ۿ][^<>"]*', re.sub(r'<(style|script)>.*?</\1>', '', src, flags=re.S))
-    left = [t for t in left if t.strip() not in ('فارسی',)]
+    left = [t for t in left if t.strip() not in ('فارسی',) and not t.startswith('بسم الله')]  # Persian switch label and the Arabic opening stay
     if left:
         raise SystemExit('en.py: untranslated text left: ' + ' | '.join(left[:8]))
     return src
