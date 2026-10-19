@@ -1,0 +1,392 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لونا · از قابلیت تا پلتفرم</title>
+<meta name="description" content="ارائهٔ آغازین لونا: گراف دانش سازمان و مثلث سود، کنترل و بینش">
+<style>
+/*FONTS*/
+:root{--bg:#0b1220;--panel:#121b2e;--panel2:#18233a;--line:#26334f;--text:#e8edf7;--mute:#93a1bd;--acc:#3fb6ff;--acc2:#2ee6a6;--warn:#ff7a6b;--gold:#f5c86a;--profit:#edc78f;--insight:#bea0f1;--control:#91d6c3}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;line-height:1.7}
+button{font-family:inherit}
+#net{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(900px 520px at 80% 15%,rgba(63,182,255,.10),transparent),radial-gradient(700px 420px at 10% 90%,rgba(46,230,166,.07),transparent),radial-gradient(ellipse at center,transparent 45%,rgba(5,9,18,.75))}
+header.top{position:fixed;top:0;inset-inline:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 26px;pointer-events:none}
+.logo{font-weight:800;font-size:19px;pointer-events:auto}.logo b{color:var(--acc2)}
+.tools{display:flex;gap:8px;pointer-events:auto}
+.tools button{background:rgba(24,35,58,.8);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:5px 13px;cursor:pointer;font-size:13px}
+.tools button:hover{color:var(--text)}
+.deck{position:fixed;inset:0;z-index:5}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:70px max(18px,6vw) 80px;opacity:0;visibility:hidden;transform:translateY(18px) scale(.985);transition:opacity .7s ease,transform .7s ease,visibility 0s .7s}
+.slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease .15s,transform .8s cubic-bezier(.2,.7,.2,1) .15s,visibility 0s}
+.kicker{color:var(--acc2);font-weight:700;letter-spacing:1px;font-size:clamp(12px,1.3vw,15px);margin-bottom:8px}
+h1{font-size:clamp(34px,6vw,78px);line-height:1.25;margin:0 0 14px;font-weight:900}
+h2{font-size:clamp(26px,4vw,52px);line-height:1.35;margin:0 0 12px;font-weight:800}
+.lead{font-size:clamp(16px,2vw,24px);color:var(--mute);max-width:900px;margin:0 auto}
+.grad{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.f{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.f.in{opacity:1;transform:none}
+.card{background:rgba(18,27,46,.82);border:1px solid var(--line);border-radius:18px;padding:22px;backdrop-filter:blur(6px)}
+.orb{display:block}
+/* cover */
+.bism{font-size:clamp(15px,1.8vw,21px);color:var(--mute);margin-bottom:22px;letter-spacing:.5px}
+.cover .orb{width:clamp(150px,22vw,260px);height:clamp(150px,22vw,260px);margin:-10px auto 4px}
+.hint{position:absolute;bottom:64px;inset-inline:0;font-size:13px;color:var(--mute);animation:breathe 2.6s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35}}
+/* 99.99 */
+.counter{font-size:clamp(80px,17vw,230px);font-weight:900;line-height:1;direction:ltr;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#fff,#7f93b8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{display:inline-block;border:1px solid var(--warn);color:var(--warn);border-radius:30px;padding:2px 16px;font-weight:800}
+/* stages */
+.stage{width:min(1000px,100%);margin-top:18px}
+.stage svg{width:100%;height:auto;display:block;overflow:visible}
+.stage text{font-family:inherit;fill:var(--text)}
+.giant circle{fill:rgba(63,182,255,.08);stroke:rgba(63,182,255,.55);stroke-width:1.5}
+.giant text{font-weight:800;font-size:24px}
+.feat rect{fill:var(--panel2);stroke:var(--warn);stroke-width:1.2}
+.feat text{font-size:15px;fill:var(--mute)}
+.on .feat{animation:eat 3.2s cubic-bezier(.55,0,.8,.4) infinite;animation-delay:var(--d)}
+@keyframes eat{0%{transform:translate(0,0) scale(1);opacity:0}10%{opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.05);opacity:0}}
+.on .giant circle{animation:gulp 3.2s ease-in-out infinite}
+@keyframes gulp{0%,60%{r:var(--r)}75%{r:calc(var(--r) + 9px)}100%{r:var(--r)}}
+/* split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:min(1050px,100%);margin-top:22px}
+.split .card{text-align:start}
+.split h3{margin:0 0 4px;font-size:clamp(18px,2vw,24px)}
+.split p{margin:0;color:var(--mute);font-size:clamp(13px,1.4vw,16px)}
+.split svg{width:100%;height:auto;margin-top:8px}
+.bad{border-top:3px solid var(--warn)}.good{border-top:3px solid var(--acc2)}
+.on .lone{animation:lone 3s ease-in infinite}
+@keyframes lone{0%,30%{transform:translate(0,0);opacity:1}85%{transform:translate(-170px,0) scale(.1);opacity:1}100%{transform:translate(-170px,0) scale(0);opacity:0}}
+.on .plug{stroke-dasharray:6 6;animation:flow 1.2s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-24}}
+/* build vs add */
+.vs{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch;width:min(1050px,100%);margin-top:22px}
+.vs .card{text-align:start}
+.vs ul{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-wrap:wrap;gap:8px}
+.vs li{background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:14px;color:var(--mute)}
+.vs .x li{border-color:rgba(255,122,107,.45)}
+.vs .mid{align-self:center;font-weight:900;color:var(--mute);font-size:22px}
+.one{display:flex;align-items:center;gap:12px;margin-top:14px;font-weight:800;color:var(--acc2);font-size:clamp(16px,1.8vw,20px)}
+.one i{flex:1;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+.quote{margin-top:26px;font-size:clamp(19px,2.6vw,32px);font-weight:800}
+/* even */
+.even{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+.even div{font-size:clamp(32px,6vw,76px);font-weight:900;line-height:1.25}
+.even span{color:var(--mute);font-weight:700;font-size:.55em;margin-inline-end:10px}
+/* onprem */
+.vault{position:relative;width:min(760px,100%);aspect-ratio:2.1;margin:18px auto 0;border:2px dashed rgba(46,230,166,.6);border-radius:26px;display:grid;place-items:center;background:rgba(46,230,166,.04)}
+.vault .lbl{position:absolute;top:-15px;inset-inline-start:26px;background:var(--bg);padding:0 12px;color:var(--acc2);font-weight:800;font-size:15px}
+.vault canvas{width:100%;height:100%;position:absolute;inset:0}
+.vault .orb{width:120px;height:120px;position:relative}
+.pills{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+.pill{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:40px;padding:10px 22px;font-weight:800;font-size:clamp(16px,2vw,22px)}
+.pill b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--panel2);font-size:17px}
+/* scale */
+.scale{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:24px}
+.scale .card{min-width:200px}
+.scale .n{font-size:clamp(28px,3.6vw,44px);font-weight:900;direction:ltr}
+.scale small{color:var(--mute)}
+/* question */
+.q .orb{width:clamp(200px,30vw,340px);height:clamp(200px,30vw,340px);margin:0 auto}
+.q h2{min-height:1.4em}
+.answer{font-size:clamp(70px,13vw,170px);font-weight:900;line-height:1.1;color:var(--profit);text-shadow:0 0 60px rgba(237,199,143,.35)}
+/* roads */
+.roads svg{width:min(900px,100%);height:auto;margin-top:14px}
+.roads text{font-family:inherit;fill:var(--text);font-weight:800}
+.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1.3s ease}
+.in .draw,.draw.in{stroke-dashoffset:0}
+/* triangle */
+.tri{position:relative;width:min(760px,100%);aspect-ratio:700/450;margin:10px auto 0}
+.tri svg{position:absolute;inset:0;width:100%;height:100%}
+.tri .orb{position:absolute;width:30%;aspect-ratio:1;height:auto;left:35%;top:22%}
+.tri .orbname{position:absolute;left:0;right:0;top:63%;font-size:12px;letter-spacing:4px;color:var(--mute);font-weight:800}
+.edge{position:absolute;transform:translate(-50%,-50%);font-weight:900;font-size:clamp(18px,2.6vw,30px);white-space:nowrap}
+.edge small{display:block;font-size:.5em;color:var(--mute);font-weight:600}
+/* wings */
+.wings svg{width:min(900px,100%);height:auto}
+.wings text{font-family:inherit;font-weight:900}
+.on .wl,.on .wr{animation:flap 2.4s ease-in-out infinite}
+.wl{transform-origin:450px 260px}.wr{transform-origin:450px 260px}
+@keyframes flap{50%{transform:rotate(var(--a))}}
+.on .lift{animation:lift 2.4s ease-in-out infinite}
+@keyframes lift{50%{transform:translateY(-14px)}}
+/* end */
+.end .orb{width:clamp(180px,26vw,300px);height:clamp(180px,26vw,300px);margin:0 auto}
+.cta{display:inline-block;background:linear-gradient(90deg,var(--acc),var(--acc2));color:#04121f;font-weight:900;padding:14px 30px;border-radius:14px;text-decoration:none;margin-top:18px;font-size:clamp(16px,1.8vw,20px);border:0;cursor:pointer}
+/* chrome */
+.bar{position:fixed;bottom:0;inset-inline:0;height:3px;z-index:20;background:rgba(38,51,79,.5)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .5s}
+.nav{position:fixed;bottom:14px;inset-inline-end:22px;z-index:20;display:flex;align-items:center;gap:8px;color:var(--mute);font-size:13px}
+.nav button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:rgba(24,35,58,.85);color:var(--text);cursor:pointer;font-size:16px}
+.notes{position:fixed;z-index:30;bottom:60px;inset-inline-start:20px;width:min(460px,calc(100% - 40px));max-height:45vh;overflow:auto;background:rgba(18,27,46,.96);border:1px solid var(--line);border-radius:16px;padding:16px 18px;font-size:15px;line-height:1.9;display:none}
+.notes.show{display:block}
+.notes h4{margin:0 0 6px;color:var(--acc2);font-size:13px}
+@media(max-width:760px){.edge{font-size:15px}.edge small{display:none}.split,.vs{grid-template-columns:1fr}.vs .mid{display:none}.slide{padding:64px 16px 72px;justify-content:flex-start;overflow-y:auto}.slide.on{padding-top:max(64px,8vh)}.hint{bottom:58px}.tools .opt{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}.slide,.f{transition-duration:.01s!important}}
+</style></head>
+<body>
+<canvas id="net" aria-hidden="true"></canvas><div class="vignette"></div>
+<header class="top"><div class="logo">Lu<b>na</b></div><div class="tools"><button id="bNotes" title="یادداشت سخنران (N)">یادداشت</button><button class="opt" id="bFs" title="تمام‌صفحه (F)">تمام‌صفحه</button></div></header>
+<main class="deck" id="deck">
+
+<section class="slide cover" data-net="form" data-notes="بسم‌الله الرحمن الرحیم.">
+ <div class="bism f" data-f="0">بسم‌الله الرحمن الرحیم</div>
+ <canvas class="orb" data-orb></canvas>
+ <div class="kicker f" data-f="0">گراف دانش سازمان · با صدای لونا</div>
+ <h1 class="f" data-f="0">از <span style="color:var(--warn)">«قابلیت»</span> تا <span class="grad">«پلتفرم»</span></h1>
+ <p class="lead f" data-f="0">چرا محصولی که غول‌ها نمی‌توانند بخورند، همان محصولی است که می‌خرند.</p>
+ <div class="hint">برای شروع، کلید ← یا Space را بزنید</div>
+</section>
+
+<section class="slide" data-net="dim" data-notes="خب، در حال حاضر، ۹۹٫۹۹ درصد توسعه‌دهندگان و برنامه‌نویسان در حال ارائه یک «قابلیت» (Feature) هستند. منظورم از ارائه یک قابلیت چیست؟">
+ <div class="kicker">واقعیت امروز</div>
+ <div class="counter" data-count="99.99">0.00%</div>
+ <h2>از توسعه‌دهندگان، دارند یک <span class="tag">قابلیت</span> می‌سازند.</h2>
+ <p class="lead f" data-f="1">منظورم از «ارائهٔ یک قابلیت» چیست؟</p>
+</section>
+
+<section class="slide" data-net="dim" data-notes="منظورم این است که شرکت‌های بزرگی مثل جمنای، گوگل، گروک، ایکس، چت‌جی‌پی‌تی و اوپن‌ای‌آی می‌توانند همین فردا محصول شما را مثل یک صبحانه بخورند! یعنی می‌توانند خیلی سریع محصول شما را از میدان رقابت خارج کنند. حتی ممکن است این اتفاق فوراً رخ دهد! متوجه شدید؟">
+ <div class="kicker">خطر قابلیت</div>
+ <h2>غول‌ها می‌توانند محصول شما را<br><span style="color:var(--warn)">مثل یک صبحانه بخورند.</span></h2>
+ <div class="stage"><svg viewBox="0 0 1000 420" aria-label="قابلیت‌های کوچک جذب شرکت‌های بزرگ می‌شوند">
+  <g class="giant"><circle cx="150" cy="95" r="70" style="--r:70px"/><text x="150" y="103" text-anchor="middle">گوگل</text></g>
+  <g class="giant"><circle cx="330" cy="230" r="78" style="--r:78px"/><text x="330" y="238" text-anchor="middle">OpenAI</text></g>
+  <g class="giant"><circle cx="140" cy="320" r="62" style="--r:62px"/><text x="140" y="328" text-anchor="middle">جمنای</text></g>
+  <g class="giant"><circle cx="420" cy="70" r="55" style="--r:55px"/><text x="420" y="78" text-anchor="middle">گروک · X</text></g>
+  <g class="feat" style="--d:0s;--dx:-560px;--dy:-10px"><rect x="840" y="65" width="140" height="44" rx="12"/><text x="910" y="93" text-anchor="middle">چت‌بات PDF</text></g>
+  <g class="feat" style="--d:.8s;--dx:-480px;--dy:-15px"><rect x="740" y="225" width="140" height="44" rx="12"/><text x="810" y="253" text-anchor="middle">خلاصه‌ساز جلسه</text></g>
+  <g class="feat" style="--d:1.6s;--dx:-690px;--dy:-60px"><rect x="760" y="360" width="140" height="44" rx="12"/><text x="830" y="388" text-anchor="middle">دستیار ایمیل</text></g>
+  <g class="feat" style="--d:2.4s;--dx:-360px;--dy:-80px"><rect x="710" y="130" width="140" height="44" rx="12"/><text x="780" y="158" text-anchor="middle">مترجم هوشمند</text></g>
+ </svg></div>
+ <p class="lead f" data-f="1">همین فردا. شاید همین امروز. <b style="color:var(--text)">و شما از میدان خارج می‌شوید.</b></p>
+</section>
+
+<section class="slide" data-net="dim" data-notes="اما وقتی شما یک پلتفرم حیاتی و اساسی ارائه می‌کنید، حتی شرکت‌های بزرگ هم به آن نیاز پیدا می‌کنند.">
+ <div class="kicker">نقطهٔ چرخش</div>
+ <h2>اما یک <span class="grad">پلتفرم حیاتی</span> را<br>حتی غول‌ها هم لازم دارند.</h2>
+ <div class="split">
+  <div class="card bad f" data-f="0"><h3>قابلیت</h3><p>یک گره تنها؛ با یک به‌روزرسانی بلعیده می‌شود.</p>
+   <svg viewBox="0 0 400 140"><circle cx="70" cy="70" r="46" fill="rgba(63,182,255,.1)" stroke="rgba(63,182,255,.6)"/><text x="70" y="77" text-anchor="middle" fill="#e8edf7" font-size="15" font-weight="800">غول</text><g class="lone"><circle cx="330" cy="70" r="16" fill="#ff7a6b"/></g></svg></div>
+  <div class="card good f" data-f="1"><h3>پلتفرم</h3><p>ستون فقراتی که خود غول‌ها به آن وصل می‌شوند.</p>
+   <svg viewBox="0 0 400 140"><g stroke="#2ee6a6" stroke-opacity=".5"><line x1="200" y1="70" x2="140" y2="40"/><line x1="200" y1="70" x2="260" y2="40"/><line x1="200" y1="70" x2="150" y2="105"/><line x1="200" y1="70" x2="255" y2="105"/><line x1="140" y1="40" x2="150" y2="105"/><line x1="260" y1="40" x2="255" y2="105"/></g>
+   <g fill="#2ee6a6"><circle cx="200" cy="70" r="12"/><circle cx="140" cy="40" r="7"/><circle cx="260" cy="40" r="7"/><circle cx="150" cy="105" r="7"/><circle cx="255" cy="105" r="7"/></g>
+   <g stroke="#3fb6ff" stroke-width="2" class="plug" fill="none"><path d="M40 30 C90 30 100 40 140 40"/><path d="M360 30 C310 30 300 40 260 40"/><path d="M40 115 C90 115 110 105 150 105"/><path d="M360 115 C310 115 295 105 255 105"/></g>
+   <g fill="rgba(63,182,255,.15)" stroke="#3fb6ff"><circle cx="28" cy="30" r="12"/><circle cx="372" cy="30" r="12"/><circle cx="28" cy="115" r="12"/><circle cx="372" cy="115" r="12"/></g></svg></div>
+ </div>
+</section>
+
+<section class="slide" data-net="dim" data-notes="چرا؟ چون این شرکت‌ها با مسائل و دردسرهای بسیار زیادی روبه‌رو هستند. اضافه‌کردن یک پروژه بزرگ و جدید به مجموعه خودشان، برای آن‌ها مشکلات و پیچیدگی‌های زیادی ایجاد می‌کند. آن‌ها باید قابلیت‌های جدیدی به محصولاتشان اضافه کنند. این دقیقاً همان چیزی است که درباره‌اش صحبت می‌کنم. شرکت‌های بزرگ باید قابلیت اضافه کنند، نه اینکه هر بار یک محصول بزرگ را از صفر برنامه‌نویسی کنند. متوجه شدید؟">
+ <div class="kicker">چرا؟</div>
+ <h2>یک پروژهٔ بزرگ و تازه، برای غول‌ها <span style="color:var(--warn)">دردسر</span> است.</h2>
+ <div class="vs">
+  <div class="card bad f x" data-f="0"><b>ساختن از صفر</b><ul><li>تیم جدید</li><li>زیرساخت</li><li>داده و یکپارچه‌سازی</li><li>امنیت و انطباق</li><li>نگهداری سال‌ها</li><li>ریسک شکست</li></ul></div>
+  <div class="mid f" data-f="1">در برابر</div>
+  <div class="card good f" data-f="1"><b>افزودن یک قابلیت روی پلتفرم آماده</b><div class="one"><span>محصول آن‌ها</span><i></i><span>پلتفرم شما</span></div><p class="lead" style="font-size:15px;margin-top:10px">یک اتصال. سریع، کم‌ریسک، قابل‌کنترل.</p></div>
+ </div>
+ <div class="quote f" data-f="2">غول‌ها <span class="grad">قابلیت اضافه می‌کنند</span>؛ نه اینکه هر بار از صفر بسازند.</div>
+</section>
+
+<section class="slide" data-net="calm" data-notes="بنابراین، اگر شما محصول خوبی به آن‌ها ارائه کنید، تمایل دارند آن را بخرند. حتی گوگل! حتی اوپن‌ای‌آی! حتی شرکت‌هایی مثل آسیاد (ASYAD) هم ترجیح می‌دهند محصول آماده و مناسب را خریداری کنند.">
+ <div class="kicker">نتیجه</div>
+ <h2>محصول خوب و آماده را <span class="grad">می‌خرند.</span></h2>
+ <div class="even">
+  <div class="f" data-f="1"><span>حتی</span> گوگل</div>
+  <div class="f" data-f="2"><span>حتی</span> OpenAI</div>
+  <div class="f" data-f="3"><span>حتی</span> آسیاد</div>
+ </div>
+</section>
+
+<section class="slide" data-net="calm" data-notes="خب. به‌خصوص زمانی که محصول و پلتفرم شما این قابلیت را داشته باشد که روی سرورهای خود آن شرکت‌ها مستقر و اجرا شود. چرا این موضوع مهم است؟ چون آن‌ها به کنترل نیاز دارند. به امنیت نیاز دارند. باید بتوانند بر چیزی که خریداری می‌کنند دید و اشراف داشته باشند. متوجه شدید؟">
+ <div class="kicker">به‌خصوص وقتی…</div>
+ <h2>پلتفرم روی <span class="grad">سرورهای خودِ آن‌ها</span> اجرا شود.</h2>
+ <div class="vault"><span class="lbl">سرورهای سازمان شما</span><canvas data-mini></canvas><canvas class="orb" data-orb></canvas></div>
+ <div class="pills">
+  <div class="pill f" data-f="1"><b>⌖</b>کنترل</div>
+  <div class="pill f" data-f="2"><b>🔒</b>امنیت</div>
+  <div class="pill f" data-f="3"><b>👁</b>دید و اشراف</div>
+ </div>
+</section>
+
+<section class="slide" data-net="zoom" data-notes="خب، قبل از اینکه وارد معرفی محصول شوم و توضیح بدهم درباره چه نوع محصولی صحبت می‌کنم، اجازه بدهید ابتدا به شما نشان بدهم که ما شرکت‌های بزرگ را می‌شناسیم. ما درک و شناخت خوبی از شرکت‌ها داریم. تخصص تیم ما در حوزه شرکت‌های بزرگی مانند متا، اوپن‌ای‌آی و گوگل و شرکت‌هایی با تعداد بسیار زیادی کاربر است. بنابراین، ما می‌دانیم این شرکت‌ها به چه چیزهایی نیاز دارند.">
+ <div class="kicker">پیش از محصول</div>
+ <h2>ما <span class="grad">شرکت‌های بزرگ</span> را می‌شناسیم.</h2>
+ <p class="lead">تخصص تیم ما در مقیاس شرکت‌هایی است که با تعداد بسیار زیادی کاربر کار می‌کنند.</p>
+ <div class="scale">
+  <div class="card f" data-f="1"><div class="n">Meta</div><small>مقیاس متا</small></div>
+  <div class="card f" data-f="2"><div class="n">OpenAI</div><small>مقیاس اوپن‌ای‌آی</small></div>
+  <div class="card f" data-f="3"><div class="n">Google</div><small>مقیاس گوگل</small></div>
+ </div>
+ <p class="quote f" data-f="4">پس می‌دانیم این شرکت‌ها <span class="grad">به چه چیزی نیاز دارند.</span></p>
+</section>
+
+<section class="slide q" data-net="dark" data-luna="هدف اصلی هر شرکتی چیست؟" data-notes="و محصول ما... محصول ما یک مثلث را در اختیار سازمان‌ها قرار می‌دهد. اجازه بدهید یک سؤال بپرسم. به نظر شما، هدف اصلی هر شرکتی چیست؟ (مکث) خب؟ پاسخ، سود است. هدف اصلی هر شرکتی این است که سود بیشتری به دست بیاورد.">
+ <canvas class="orb" data-orb></canvas>
+ <div class="kicker">لونا می‌پرسد</div>
+ <h2 class="luna-line"></h2>
+ <div class="answer f" data-f="1">سود</div>
+ <p class="lead f" data-f="1">هدف اصلی هر شرکتی، سود بیشتر است.</p>
+</section>
+
+<section class="slide roads" data-net="calm" data-notes="خب، موضوع ساده‌ای است. اما چگونه می‌توانید سود شرکتتان را افزایش دهید؟ این یک سؤال بسیار بزرگ و مهم است. شما برای افزایش سود، دو راه دارید. راه اول: کاهش هزینه‌ها. راه دوم: افزایش ارزش افزوده. خب؟">
+ <div class="kicker">سؤال بزرگ</div>
+ <h2>چگونه سود را افزایش دهیم؟ <span class="grad">دو راه.</span></h2>
+ <svg viewBox="0 0 900 330">
+  <rect x="370" y="10" width="160" height="62" rx="16" fill="rgba(237,199,143,.12)" stroke="#edc78f"/><text x="450" y="50" text-anchor="middle" font-size="26" fill="#edc78f">سود</text>
+  <path class="draw f" data-f="1" style="--len:330" d="M450 72 C450 150 230 150 230 225" fill="none" stroke="#3fb6ff" stroke-width="3"/>
+  <path class="draw f" data-f="2" style="--len:330" d="M450 72 C450 150 670 150 670 225" fill="none" stroke="#2ee6a6" stroke-width="3"/>
+  <g class="f" data-f="1"><rect x="100" y="225" width="260" height="80" rx="18" fill="#121b2e" stroke="#3fb6ff"/><text x="230" y="260" text-anchor="middle" font-size="16" fill="#93a1bd">راه اول</text><text x="230" y="290" text-anchor="middle" font-size="24">کاهش هزینه‌ها</text></g>
+  <g class="f" data-f="2"><rect x="540" y="225" width="260" height="80" rx="18" fill="#121b2e" stroke="#2ee6a6"/><text x="670" y="260" text-anchor="middle" font-size="16" fill="#93a1bd">راه دوم</text><text x="670" y="290" text-anchor="middle" font-size="24">افزایش ارزش افزوده</text></g>
+ </svg>
+</section>
+
+<section class="slide" data-net="calm" data-notes="وقتی می‌گویم محصول ما یک مثلث را در اختیار سازمان قرار می‌دهد، منظورم این سه مورد است: سود، کنترل و بینش. این مثلث برای هر سازمانی بسیار مهم است؛ به‌خصوص سازمان‌های بزرگ.">
+ <div class="kicker">یک هوش · سه بُعد ارزش</div>
+ <h2>مثلث <span style="color:var(--profit)">سود</span>، <span style="color:var(--control)">کنترل</span> و <span style="color:var(--insight)">بینش</span></h2>
+ <div class="tri">
+  <svg viewBox="0 0 700 450" aria-hidden="true"><defs><radialGradient id="haze"><stop stop-color="#a574d1" stop-opacity=".16"/><stop offset="1" stop-color="#a574d1" stop-opacity="0"/></radialGradient></defs>
+   <ellipse cx="350" cy="230" rx="280" ry="210" fill="url(#haze)"/>
+   <path class="draw f" data-f="1" style="--len:480" d="M110 85 H590" stroke="#edc78f" stroke-width="2.5" fill="none"/>
+   <path class="draw f" data-f="2" style="--len:400" d="M590 85 L350 400" stroke="#91d6c3" stroke-width="2.5" fill="none"/>
+   <path class="draw f" data-f="3" style="--len:400" d="M110 85 L350 400" stroke="#bea0f1" stroke-width="2.5" fill="none"/>
+   <g fill="#d6c3ed"><circle cx="110" cy="85" r="5"/><circle cx="590" cy="85" r="5"/><circle cx="350" cy="400" r="5"/></g></svg>
+  <canvas class="orb" data-orb></canvas><div class="orbname">LUNA</div>
+  <div class="edge f" data-f="1" style="left:50%;top:9%;color:var(--profit)">سود<small>ارزش بیشتر بسازید</small></div>
+  <div class="edge f" data-f="2" style="left:82%;top:58%;color:var(--control)">کنترل<small>کار را هم‌راستا نگه دارید</small></div>
+  <div class="edge f" data-f="3" style="left:18%;top:58%;color:var(--insight)">بینش<small>ببینید چه چیز به چه وصل است</small></div>
+ </div>
+</section>
+
+<section class="slide wings" data-net="calm" data-notes="خب، ما درباره سود صحبت کردیم. گفتیم برای افزایش سود، دو راه وجود دارد. اما برای اینکه بتوانید از این دو راه استفاده کنید و سود بیشتری به دست بیاورید، به دو بال نیاز دارید. متوجه شدید؟ و این دو بال عبارت‌اند از: بال اول: کنترل (Control). بال دوم: بینش (Insight). وقتی بر شرکت خود کنترل داشته باشید و وقتی نسبت به وضعیت شرکتتان بینش و شناخت داشته باشید، می‌توانید سود بیشتری ایجاد کنید.">
+ <div class="kicker">برای پرواز سود</div>
+ <h2>به <span class="grad">دو بال</span> نیاز دارید.</h2>
+ <svg viewBox="0 0 900 360" aria-label="کنترل و بینش، دو بال سود">
+  <g class="lift">
+   <g class="wr f" data-f="1" style="--a:-9deg"><path d="M470 250 C560 120 720 70 860 80 C800 130 760 170 720 200 C760 200 790 210 810 225 C740 240 640 260 470 270Z" fill="rgba(145,214,195,.18)" stroke="#91d6c3" stroke-width="2"/><text x="690" y="175" text-anchor="middle" font-size="34" fill="#91d6c3">کنترل</text><text x="690" y="210" text-anchor="middle" font-size="15" fill="#93a1bd">بال اول · Control</text></g>
+   <g class="wl f" data-f="2" style="--a:9deg"><path d="M430 250 C340 120 180 70 40 80 C100 130 140 170 180 200 C140 200 110 210 90 225 C160 240 260 260 430 270Z" fill="rgba(190,160,241,.18)" stroke="#bea0f1" stroke-width="2"/><text x="210" y="175" text-anchor="middle" font-size="34" fill="#bea0f1">بینش</text><text x="210" y="210" text-anchor="middle" font-size="15" fill="#93a1bd">بال دوم · Insight</text></g>
+   <circle cx="450" cy="260" r="62" fill="rgba(237,199,143,.14)" stroke="#edc78f" stroke-width="2.5"/><text x="450" y="272" text-anchor="middle" font-size="34" fill="#edc78f">سود</text>
+  </g>
+ </svg>
+ <p class="lead f" data-f="3">با <b style="color:var(--control)">کنترل</b> بر شرکت و <b style="color:var(--insight)">بینش</b> نسبت به وضعیت آن، سود بیشتری می‌سازید.</p>
+</section>
+
+<section class="slide end" data-net="form" data-luna="پلتفرم ما چگونه این دو بال را به شما می‌دهد؟" data-notes="اما سؤال اصلی اینجاست: پلتفرم ما، محصول ما، چگونه این دو بال را در اختیار شما قرار می‌دهد تا به آن یک نتیجه برسید؟ یعنی چگونه به شما «کنترل» و «بینش» می‌دهد تا در نهایت به «سود بیشتر» برسید؟ (اینجا وارد نمایش محصول شوید.)">
+ <canvas class="orb" data-orb></canvas>
+ <div class="kicker">سؤال اصلی</div>
+ <h2 class="luna-line"></h2>
+ <p class="lead f" data-f="1">چگونه <b style="color:var(--control)">کنترل</b> و <b style="color:var(--insight)">بینش</b> می‌دهد تا به <b style="color:var(--profit)">سود بیشتر</b> برسید؟</p>
+ <div class="f" data-f="2"><a class="cta" id="cta" href="#">بیایید نشانتان بدهم ←</a></div>
+</section>
+
+</main>
+<div class="notes" id="notes"><h4 id="notesH"></h4><div id="notesT"></div></div>
+<div class="nav"><button id="prev" aria-label="قبلی">→</button><span id="num"></span><button id="next" aria-label="بعدی">←</button></div>
+<div class="bar"><i id="bar"></i></div>
+<script>
+(()=>{
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0,step=0;
+const maxStep=s=>Math.max(0,...[...s.querySelectorAll('[data-f]')].map(e=>+e.dataset.f));
+
+/* ---- Luna orb: port of the product's paintVoiceOrb ---- */
+const BLOBS=[{hue:322,orbit:.42,speed:.55,phase:0,size:.78},{hue:268,orbit:.36,speed:-.42,phase:1.7,size:.82},{hue:196,orbit:.46,speed:.36,phase:3.1,size:.74},{hue:28,orbit:.4,speed:-.6,phase:4.4,size:.66},{hue:240,orbit:.3,speed:.5,phase:5.6,size:.7}];
+const wob=(a,t,l)=>Math.sin(a*3+t*1.7)*.5+Math.sin(a*5-t*2.3)*.3+Math.sin(a*2+t*.9)*.2*(.4+l);
+function paintOrb(ctx,w,h,time,level,energy){
+ const cx=w/2,cy=h/2,base=Math.min(w,h)*.27,r=base*(1+level*.16),drive=.35+energy*.65+level*1.4;
+ ctx.clearRect(0,0,w,h);
+ const halo=ctx.createRadialGradient(cx,cy,r*.6,cx,cy,r*(2+level*.9));
+ halo.addColorStop(0,`hsla(285,95%,62%,${.32+level*.3})`);halo.addColorStop(.5,`hsla(215,95%,60%,${.1+level*.12})`);halo.addColorStop(1,'hsla(215,95%,60%,0)');
+ ctx.fillStyle=halo;ctx.fillRect(0,0,w,h);
+ ctx.save();ctx.beginPath();
+ for(let i=0;i<=96;i++){const a=i/96*Math.PI*2,rr=r*(1+wob(a,time,level)*(.012+level*.075));const x=cx+Math.cos(a)*rr,y=cy+Math.sin(a)*rr;i?ctx.lineTo(x,y):ctx.moveTo(x,y);}
+ ctx.closePath();ctx.clip();
+ const body=ctx.createRadialGradient(cx-r*.3,cy-r*.35,r*.1,cx,cy,r*1.15);body.addColorStop(0,'#2a1d52');body.addColorStop(1,'#0c0820');
+ ctx.fillStyle=body;ctx.fillRect(cx-r*1.3,cy-r*1.3,r*2.6,r*2.6);
+ ctx.globalCompositeOperation='lighter';
+ for(const b of BLOBS){const a=b.phase+time*b.speed*drive,o=r*b.orbit*(.85+level*.5+Math.sin(time*.8+b.phase)*.12),bx=cx+Math.cos(a)*o,by=cy+Math.sin(a*1.3)*o,s=r*b.size*(.9+level*.45);
+  const g=ctx.createRadialGradient(bx,by,0,bx,by,s);g.addColorStop(0,`hsla(${b.hue},100%,62%,${.78+level*.2})`);g.addColorStop(.55,`hsla(${b.hue},100%,55%,.28)`);g.addColorStop(1,`hsla(${b.hue},100%,50%,0)`);ctx.fillStyle=g;ctx.fillRect(bx-s,by-s,s*2,s*2);}
+ ctx.globalCompositeOperation='source-over';
+ const rim=ctx.createRadialGradient(cx,cy,r*.72,cx,cy,r*1.02);rim.addColorStop(0,'rgba(255,255,255,0)');rim.addColorStop(1,`rgba(255,255,255,${.2+level*.25})`);ctx.fillStyle=rim;ctx.fillRect(cx-r*1.3,cy-r*1.3,r*2.6,r*2.6);
+ const sh=ctx.createRadialGradient(cx-r*.38,cy-r*.46,0,cx-r*.38,cy-r*.46,r*.55);sh.addColorStop(0,'rgba(255,255,255,.5)');sh.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=sh;ctx.fillRect(cx-r,cy-r,r*2,r*2);
+ ctx.restore();
+}
+let talkUntil=0;
+function fit(c){const d=Math.min(devicePixelRatio||1,1.5),w=c.clientWidth,h=c.clientHeight;if(c.width!==Math.round(w*d)||c.height!==Math.round(h*d)){c.width=Math.round(w*d);c.height=Math.round(h*d);}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return [x,w,h];}
+
+/* ---- Knowledge graph background (palette of the landing-page network) ---- */
+const net=document.getElementById('net');
+let seed=47;const rnd=()=>(seed=seed*16807%2147483647,(seed-1)/2147483646);
+const PAL=['#a997ff','#7bcfc8','#d99bbb','#b6b4fa','#e7bd8d'];
+const N=innerWidth<700?170:300,P=[];
+for(let i=0;i<N;i++){const a=rnd()*Math.PI*2,z=rnd()*2-1,r=i<N*.85?1+rnd()*.35:rnd()*.8;P.push({x:Math.sqrt(1-z*z)*Math.cos(a)*r,y:z*r*.8,z:Math.sqrt(1-z*z)*Math.sin(a)*r,c:PAL[i%5],o:rnd(),s:1+rnd()*1.6});}
+const E=[];for(let i=0;i<N;i++)for(let j=i+1;j<N;j++){const dx=P[i].x-P[j].x,dy=P[i].y-P[j].y,dz=P[i].z-P[j].z;if(dx*dx+dy*dy+dz*dz<.11)E.push([i,j]);}
+const MODES={form:{reveal:1,alpha:1,scale:1,x:0},dim:{reveal:1,alpha:.32,scale:1.25,x:.25},calm:{reveal:1,alpha:.45,scale:1.1,x:-.2},zoom:{reveal:1,alpha:.7,scale:1.9,x:0},dark:{reveal:1,alpha:.15,scale:.8,x:0}};
+const S={reveal:0,alpha:1,scale:1,x:0},T={...MODES.form};
+let born=performance.now();
+function drawNet(now){
+ const [c,w,h]=fit(net);for(const k in T)S[k]+=(T[k]-S[k])*.04;
+ const age=(now-born)/1000,rev=Math.min(1,age/4)*S.reveal,rot=RM?0:now/1000*.07,ca=Math.cos(rot),sa=Math.sin(rot),R=Math.min(w,h)*.36*S.scale,ox=w/2+S.x*w*.3,oy=h/2;
+ c.clearRect(0,0,w,h);const pr=P.map(p=>{const x=p.x*ca-p.z*sa,z=p.x*sa+p.z*ca,k=2.6/(2.6+z);return [ox+x*R*k,oy+p.y*R*k,k];});
+ c.lineWidth=.6;for(const [i,j] of E){if(P[i].o>rev||P[j].o>rev)continue;const a=pr[i],b=pr[j];c.strokeStyle=`rgba(169,151,255,${.16*S.alpha*Math.min(a[2],b[2])})`;c.beginPath();c.moveTo(a[0],a[1]);c.lineTo(b[0],b[1]);c.stroke();}
+ for(let i=0;i<N;i++){if(P[i].o>rev)continue;const p=pr[i];c.globalAlpha=Math.min(1,S.alpha*(.35+p[2]*.6));c.fillStyle=P[i].c;c.beginPath();c.arc(p[0],p[1],P[i].s*p[2],0,7);c.fill();}
+ c.globalAlpha=1;
+}
+/* small private graph inside the on-prem vault */
+const mini=document.querySelector('[data-mini]');const MP=[];for(let i=0;i<46;i++)MP.push({a:rnd()*7,r:.25+rnd()*.7,s:(rnd()-.5)*.3,c:PAL[i%5]});
+function drawMini(t){const [c,w,h]=fit(mini);c.clearRect(0,0,w,h);const pts=MP.map(p=>[w/2+Math.cos(p.a+t*p.s)*p.r*w*.44,h/2+Math.sin(p.a+t*p.s)*p.r*h*.4]);c.strokeStyle='rgba(46,230,166,.18)';c.lineWidth=.7;
+ for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i][0]-pts[j][0],dy=pts[i][1]-pts[j][1];if(dx*dx+dy*dy<w*w*.012){c.beginPath();c.moveTo(...pts[i]);c.lineTo(...pts[j]);c.stroke();}}
+ pts.forEach((p,i)=>{c.fillStyle=MP[i].c;c.beginPath();c.arc(p[0],p[1],2.2,0,7);c.fill();});}
+
+const t0=performance.now();
+function loop(now){
+ drawNet(now);const t=(now-t0)/1000,s=slides[cur];
+ s.querySelectorAll('[data-orb]').forEach(cv=>{const [c,w,h]=fit(cv);const talk=now<talkUntil;paintOrb(c,w,h,RM?0:t,RM?0:talk?.16+Math.abs(Math.sin(t*7))*.3:.03,talk?.9:.3);});
+ if(s.contains(mini))drawMini(RM?0:t);
+ requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ---- Luna "speaks" a line: typed text while the orb ripples ---- */
+let typer;
+function speak(s){const el=s.querySelector('.luna-line');if(!el)return;const txt=s.dataset.luna;clearInterval(typer);el.textContent='';
+ if(RM){el.textContent=txt;return;}let i=0;talkUntil=performance.now()+txt.length*55+600;typer=setInterval(()=>{el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(typer);},55);}
+
+function countUp(s){const el=s.querySelector('[data-count]');if(!el)return;const to=+el.dataset.count,st=performance.now();
+ const f=n=>{const p=RM?1:Math.min(1,(n-st)/1600),e=1-Math.pow(1-p,3);el.textContent=(to*e).toFixed(2)+'%';if(p<1)requestAnimationFrame(f);};requestAnimationFrame(f);}
+
+/* ---- navigation ---- */
+const notes=document.getElementById('notes');
+function render(enter){
+ slides.forEach((s,i)=>s.classList.toggle('on',i===cur));
+ const s=slides[cur];s.querySelectorAll('[data-f]').forEach(e=>e.classList.toggle('in',+e.dataset.f<=step));
+ Object.assign(T,MODES[s.dataset.net||'calm']);
+ if(enter){if(s.dataset.net==='form'&&cur===0)born=performance.now();countUp(s);speak(s);}
+ document.getElementById('num').textContent=fa(cur+1)+' / '+fa(slides.length);
+ document.getElementById('bar').style.width=((cur+step/(maxStep(s)+1))/(slides.length-1)*100)+'%';
+ document.getElementById('notesH').textContent='یادداشت سخنران · اسلاید '+fa(cur+1);
+ document.getElementById('notesT').textContent=s.dataset.notes||'';
+ history.replaceState(null,'','#'+(cur+1));
+}
+function go(d){const s=slides[cur];
+ if(d>0){if(step<maxStep(s)){step++;render();return;}if(cur<slides.length-1){cur++;step=0;render(true);}}
+ else{if(step>0){step--;render();return;}if(cur>0){cur--;step=maxStep(slides[cur]);render(true);}}}
+function jump(i){cur=Math.max(0,Math.min(slides.length-1,i));step=0;render(true);}
+addEventListener('keydown',e=>{const k=e.key;
+ if(['ArrowLeft','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(1);}
+ else if(['ArrowRight','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();go(-1);}
+ else if(k==='Home')jump(0);else if(k==='End')jump(slides.length-1);
+ else if(k==='n'||k==='N'||k==='د')notes.classList.toggle('show');
+ else if(k==='f'||k==='F'||k==='ب')fs();});
+document.getElementById('next').onclick=()=>go(1);document.getElementById('prev').onclick=()=>go(-1);
+document.getElementById('bNotes').onclick=()=>notes.classList.toggle('show');
+const fs=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.().catch(()=>{});
+document.getElementById('bFs').onclick=fs;
+document.getElementById('deck').addEventListener('click',e=>{if(e.target.closest('a,button'))return;go(e.clientX<innerWidth/2?1:-1);});
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX},{passive:true});
+addEventListener('touchend',e=>{if(tx==null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)go(dx>0?1:-1);tx=null;},{passive:true});
+/* The final button hands over to the live product: pass ?product=<url> to point it at the running app. */
+const product=new URLSearchParams(location.search).get('product');const cta=document.getElementById('cta');
+if(product&&/^https?:\/\//.test(product)){cta.href=product;cta.target='_blank';cta.rel='noopener';}else cta.onclick=e=>{e.preventDefault();jump(0);};
+const h=parseInt(location.hash.slice(1));if(h>0)cur=Math.min(slides.length-1,h-1);
+render(true);
+})();
+</script>
+</body></html>
