@@ -11,8 +11,8 @@ button{font-family:inherit}
 header.top{position:fixed;top:0;inset-inline:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 26px;pointer-events:none}
 .logo{font-weight:800;font-size:19px;pointer-events:auto}.logo b{color:var(--acc2)}
 .tools{display:flex;gap:8px;pointer-events:auto}
-.tools button{background:rgba(24,35,58,.8);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:5px 13px;cursor:pointer;font-size:13px}
-.tools button:hover{color:var(--text)}
+.tools button,.tools .langbtn{text-decoration:none;background:rgba(24,35,58,.8);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:5px 13px;cursor:pointer;font-size:13px}
+.tools button:hover,.tools .langbtn:hover{color:var(--text)}
 .deck{position:fixed;inset:0;z-index:5}
 .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:70px max(18px,6vw) 80px;opacity:0;visibility:hidden;transform:translateY(18px) scale(.985);transition:opacity .7s ease,transform .7s ease,visibility 0s .7s}
 .slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease .15s,transform .8s cubic-bezier(.2,.7,.2,1) .15s,visibility 0s}
@@ -123,7 +123,7 @@ h2{font-size:clamp(26px,4vw,52px);line-height:1.35;margin:0 0 12px;font-weight:8
 </style></head>
 <body>
 <canvas id="net" aria-hidden="true"></canvas><div class="vignette"></div>
-<header class="top"><div class="logo">Lu<b>na</b></div><div class="tools"><button id="bNotes" title="یادداشت سخنران (N)">یادداشت</button><button class="opt" id="bFs" title="تمام‌صفحه (F)">تمام‌صفحه</button></div></header>
+<header class="top"><div class="logo">Lu<b>na</b></div><div class="tools"><a class="langbtn" href="./" lang="en">English</a><button id="bNotes" title="یادداشت سخنران (N)">یادداشت</button><button class="opt" id="bFs" title="تمام‌صفحه (F)">تمام‌صفحه</button></div></header>
 <main class="deck" id="deck">
 
 <section class="slide cover" data-net="form" data-notes="بسم‌الله الرحمن الرحیم.">
