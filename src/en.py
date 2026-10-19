@@ -9,7 +9,7 @@ import re
 # Speaker notes, one per slide, in slide order.
 NOTES = [
     "بسم الله الرحمن الرحيم (In the name of God, the Most Gracious, the Most Merciful.)",
-    "Right now, 99.99 percent of developers and programmers are shipping a \"feature\". What do I mean by shipping a feature?",
+    "Right now, 90 percent of developers and programmers are shipping a \"feature\". What do I mean by shipping a feature?",
     "I mean that big companies like Gemini, Google, Grok, X, ChatGPT and OpenAI can eat your product for breakfast tomorrow! They can push your product out of the race very quickly. It might even happen immediately! Do you see?",
     "But when you offer a vital, foundational platform, even the big companies come to need it.",
     "Why? Because these companies face a huge number of problems and headaches. Adding a big new project to their portfolio creates a lot of problems and complexity for them. They need to add new features to their products. That is exactly what I am talking about. Big companies should add features, not program a big product from scratch every time. Do you see?",
@@ -33,7 +33,6 @@ TEXT = [
     ('<html lang="fa" dir="rtl">', '<html lang="en" dir="ltr">'),
     ('<title>لونا · از قابلیت تا پلتفرم</title>', '<title>Luna · From Feature to Platform</title>'),
     ('content="ارائهٔ آغازین لونا: گراف دانش سازمان و مثلث سود، کنترل و بینش"', 'content="Luna opening presentation: the organizational knowledge graph and the triangle of profit, control and insight"'),
-    ('<a class="langbtn" href="./" lang="en">English</a>', '<a class="langbtn" href="fa.html" lang="fa">فارسی</a>'),
     ('title="یادداشت سخنران (N)">یادداشت</button>', 'title="Speaker notes (N)">Notes</button>'),
     ('title="تمام‌صفحه (F)">تمام‌صفحه</button>', 'title="Fullscreen (F)">Fullscreen</button>'),
     # cover
@@ -42,7 +41,7 @@ TEXT = [
     ('از <span style="color:var(--warn)">«قابلیت»</span> تا <span class="grad">«پلتفرم»</span>', 'From a <span style="color:var(--warn)">feature</span> to a <span class="grad">platform</span>'),
     ('چرا محصولی که غول‌ها نمی‌توانند بخورند، همان محصولی است که می‌خرند.', 'Why the product the giants can’t eat is the product they buy.'),
     ('برای شروع، کلید ← یا Space را بزنید', 'Press → or Space to begin'),
-    # 99.99
+    # 90%
     ('<div class="kicker">واقعیت امروز</div>', '<div class="kicker">The reality today</div>'),
     ('<h2>از توسعه‌دهندگان، دارند یک <span class="tag">قابلیت</span> می‌سازند.</h2>', '<h2>of developers are shipping a <span class="tag">feature</span>.</h2>'),
     ('منظورم از «ارائهٔ یک قابلیت» چیست؟', 'What do I mean by “shipping a feature”?'),
@@ -128,6 +127,7 @@ TEXT = [
     # chrome and script
     ('<button id="prev" aria-label="قبلی">→</button>', '<button id="prev" aria-label="Previous">←</button>'),
     ('<button id="next" aria-label="بعدی">←</button>', '<button id="next" aria-label="Next">→</button>'),
+    ("const OTHER_LANG='./';", "const OTHER_LANG='fa.html';"),
     ("const fa=n=>String(n).replace(/\\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);", "const fa=n=>String(n);"),
     ("'یادداشت سخنران · اسلاید '", "'Speaker notes · slide '"),
     # LTR: next is to the right
@@ -150,7 +150,7 @@ def to_english(src: str) -> str:
     if n != len(NOTES):
         raise SystemExit(f'en.py: {n} slides but {len(NOTES)} notes')
     left = re.findall(r'[؀-ۿ][^<>"]*', re.sub(r'<(style|script)>.*?</\1>', '', src, flags=re.S))
-    left = [t for t in left if t.strip() not in ('فارسی',) and not t.startswith('بسم الله')]  # Persian switch label and the Arabic opening stay
+    left = [t for t in left if not t.startswith('بسم الله')]  # Persian switch label and the Arabic opening stay
     if left:
         raise SystemExit('en.py: untranslated text left: ' + ' | '.join(left[:8]))
     return src

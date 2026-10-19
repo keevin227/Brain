@@ -11,8 +11,8 @@ button{font-family:inherit}
 header.top{position:fixed;top:0;inset-inline:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:12px 26px;pointer-events:none}
 .logo{font-weight:800;font-size:19px;pointer-events:auto}.logo b{color:var(--acc2)}
 .tools{display:flex;gap:8px;pointer-events:auto}
-.tools button,.tools .langbtn{text-decoration:none;background:rgba(24,35,58,.8);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:5px 13px;cursor:pointer;font-size:13px}
-.tools button:hover,.tools .langbtn:hover{color:var(--text)}
+.tools button{background:rgba(24,35,58,.8);color:var(--mute);border:1px solid var(--line);border-radius:20px;padding:5px 13px;cursor:pointer;font-size:13px}
+.tools button:hover{color:var(--text)}
 .deck{position:fixed;inset:0;z-index:5}
 .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:70px max(18px,6vw) 80px;opacity:0;visibility:hidden;transform:translateY(18px) scale(.985);transition:opacity .7s ease,transform .7s ease,visibility 0s .7s}
 .slide.on{opacity:1;visibility:visible;transform:none;transition:opacity .7s ease .15s,transform .8s cubic-bezier(.2,.7,.2,1) .15s,visibility 0s}
@@ -30,7 +30,7 @@ h2{font-size:clamp(26px,4vw,52px);line-height:1.35;margin:0 0 12px;font-weight:8
 .cover .orb{width:clamp(150px,22vw,260px);height:clamp(150px,22vw,260px);margin:-10px auto 4px}
 .hint{position:absolute;bottom:64px;inset-inline:0;font-size:13px;color:var(--mute);animation:breathe 2.6s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.35}}
-/* 99.99 */
+/* 90% */
 .counter{font-size:clamp(80px,17vw,230px);font-weight:900;line-height:1;direction:ltr;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#fff,#7f93b8);-webkit-background-clip:text;background-clip:text;color:transparent}
 .tag{display:inline-block;border:1px solid var(--warn);color:var(--warn);border-radius:30px;padding:2px 16px;font-weight:800}
 /* stages */
@@ -123,7 +123,7 @@ h2{font-size:clamp(26px,4vw,52px);line-height:1.35;margin:0 0 12px;font-weight:8
 </style></head>
 <body>
 <canvas id="net" aria-hidden="true"></canvas><div class="vignette"></div>
-<header class="top"><div class="logo">Lu<b>na</b></div><div class="tools"><a class="langbtn" href="./" lang="en">English</a><button id="bNotes" title="یادداشت سخنران (N)">یادداشت</button><button class="opt" id="bFs" title="تمام‌صفحه (F)">تمام‌صفحه</button></div></header>
+<header class="top"><div class="logo">Lu<b>na</b></div><div class="tools"><button id="bNotes" title="یادداشت سخنران (N)">یادداشت</button><button class="opt" id="bFs" title="تمام‌صفحه (F)">تمام‌صفحه</button></div></header>
 <main class="deck" id="deck">
 
 <section class="slide cover" data-net="form" data-notes="بسم‌الله الرحمن الرحیم.">
@@ -135,9 +135,9 @@ h2{font-size:clamp(26px,4vw,52px);line-height:1.35;margin:0 0 12px;font-weight:8
  <div class="hint">برای شروع، کلید ← یا Space را بزنید</div>
 </section>
 
-<section class="slide" data-net="dim" data-notes="خب، در حال حاضر، ۹۹٫۹۹ درصد توسعه‌دهندگان و برنامه‌نویسان در حال ارائه یک «قابلیت» (Feature) هستند. منظورم از ارائه یک قابلیت چیست؟">
+<section class="slide" data-net="dim" data-notes="خب، در حال حاضر، ۹۰ درصد توسعه‌دهندگان و برنامه‌نویسان در حال ارائه یک «قابلیت» (Feature) هستند. منظورم از ارائه یک قابلیت چیست؟">
  <div class="kicker">واقعیت امروز</div>
- <div class="counter" data-count="99.99">0.00%</div>
+ <div class="counter" data-count="90">0%</div>
  <h2>از توسعه‌دهندگان، دارند یک <span class="tag">قابلیت</span> می‌سازند.</h2>
  <p class="lead f" data-f="1">منظورم از «ارائهٔ یک قابلیت» چیست؟</p>
 </section>
@@ -350,7 +350,7 @@ function speak(s){const el=s.querySelector('.luna-line');if(!el)return;const txt
  if(RM){el.textContent=txt;return;}let i=0;talkUntil=performance.now()+txt.length*55+600;typer=setInterval(()=>{el.textContent=txt.slice(0,++i);if(i>=txt.length)clearInterval(typer);},55);}
 
 function countUp(s){const el=s.querySelector('[data-count]');if(!el)return;const to=+el.dataset.count,st=performance.now();
- const f=n=>{const p=RM?1:Math.min(1,(n-st)/1600),e=1-Math.pow(1-p,3);el.textContent=(to*e).toFixed(2)+'%';if(p<1)requestAnimationFrame(f);};requestAnimationFrame(f);}
+ const f=n=>{const p=RM?1:Math.min(1,(n-st)/1600),e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e)+'%';if(p<1)requestAnimationFrame(f);};requestAnimationFrame(f);}
 
 /* ---- navigation ---- */
 const notes=document.getElementById('notes');
@@ -369,7 +369,11 @@ function go(d){const s=slides[cur];
  if(d>0){if(step<maxStep(s)){step++;render();return;}if(cur<slides.length-1){cur++;step=0;render(true);}}
  else{if(step>0){step--;render();return;}if(cur>0){cur--;step=maxStep(slides[cur]);render(true);}}}
 function jump(i){cur=Math.max(0,Math.min(slides.length-1,i));step=0;render(true);}
+/* Ctrl+F (Cmd+F on Mac) switches language, staying on the same slide. */
+const OTHER_LANG='./';
 addEventListener('keydown',e=>{const k=e.key;
+ if((e.ctrlKey||e.metaKey)&&e.code==='KeyF'){e.preventDefault();location.href=OTHER_LANG+location.search+'#'+(cur+1);return;}
+ if(e.ctrlKey||e.metaKey||e.altKey)return;
  if(['ArrowLeft','ArrowDown','PageDown',' ','Enter'].includes(k)){e.preventDefault();go(1);}
  else if(['ArrowRight','ArrowUp','PageUp','Backspace'].includes(k)){e.preventDefault();go(-1);}
  else if(k==='Home')jump(0);else if(k==='End')jump(slides.length-1);
